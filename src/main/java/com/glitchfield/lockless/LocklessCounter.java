@@ -4,40 +4,41 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class LocklessCounter {
 	
-private int SIZE = 100;
+	private int SIZE = 100;
 	
 	private volatile int A = 0;
-	private volatile boolean Bworking = false;
 	
-	volatile int spinCounter = 0;
-	
-	volatile AtomicIntegerArray BB;
-	volatile AtomicIntegerArray result;
+	private volatile AtomicIntegerArray B;
+	private volatile AtomicIntegerArray result;
 	
 	public LocklessCounter() {
-		BB = new AtomicIntegerArray(SIZE*2);
+		
+		B = new AtomicIntegerArray(SIZE*2);
 		result = new AtomicIntegerArray(SIZE*2);
 		for(int i = 0; i < SIZE*2; i++) {
-			BB.set(i, 0);
+			B.set(i, 0);
 			result.set(i, 0);
 		}
+		
 	}
 	
 	public LocklessCounter(final int size) {
+		
 		SIZE = size;
-		BB = new AtomicIntegerArray(SIZE*2);
+		B = new AtomicIntegerArray(SIZE*2);
 		result = new AtomicIntegerArray(SIZE*2);
 		for(int i = 0; i < SIZE*2; i++) {
-			BB.set(i, 0);
+			B.set(i, 0);
 			result.set(i, 0);
 		}
+		
 	}
 	
 	public synchronized void reset() {
 		
 		A = 0;
 		for(int i = 0; i < SIZE*2; i++) {
-			BB.set(i, 0);
+			B.set(i, 0);
 			result.set(i, 0);
 		}
 		
@@ -47,18 +48,17 @@ private int SIZE = 100;
 		
 		A = a;
 		
-		while(Bworking) {
-			spinCounter++;
-		}
-		
-		int b = BB.get(A);
-		int counter = a-1;
+		int b = B.get(A);
+		int counter = A-1;
 		while(counter >= 0) {
-			if(BB.get(counter) != 0) {
-				if(b < BB.get(counter)) {
-					b = BB.get(counter);
-					break;
+			int temp = B.get(counter);
+			if(temp != 0) {
+				if(b < temp) {
+//					b = BB.get(counter);
+					b = temp;
+					
 				} 
+				break;
 			}
 			counter--;
 		}
@@ -73,14 +73,11 @@ private int SIZE = 100;
 		
 		int a = A;
 		
-		Bworking = true;
-		BB.set(a, b);
-		Bworking = false;
+		B.set(a, b);
 		
 		int resTemp = result.get(b-1);
 		
 		if(resTemp >= a+b) {
-			//return a+b+1;
 			return resTemp + 1;
 		} else {
 			return a+b;
