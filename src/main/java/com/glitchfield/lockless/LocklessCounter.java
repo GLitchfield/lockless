@@ -48,15 +48,14 @@ public class LocklessCounter {
 		
 		A = a;
 		
-		int b = B.get(A);
-		int counter = A-1;
+		int b = B.get(a-1);
+		int counter = a-2;
+		
 		while(counter >= 0) {
 			int temp = B.get(counter);
 			if(temp != 0) {
 				if(b < temp) {
-//					b = BB.get(counter);
 					b = temp;
-					
 				} 
 				break;
 			}
@@ -64,6 +63,7 @@ public class LocklessCounter {
 		}
 		
 		result.set(b, a+b);
+		//result.set(a+b, a+b);
 		
 		return a+b;
 		
@@ -76,6 +76,7 @@ public class LocklessCounter {
 		B.set(a, b);
 		
 		int resTemp = result.get(b-1);
+		//int resTemp = result.get(a+b-1);
 		
 		if(resTemp >= a+b) {
 			return resTemp + 1;

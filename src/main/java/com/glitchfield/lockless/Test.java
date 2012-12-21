@@ -42,7 +42,8 @@ public class Test {
 			results.set(i, 0);
 		}
 		
-		final AtomicBoolean keepRunning = new AtomicBoolean(true);
+		final AtomicBoolean keepRunningA = new AtomicBoolean(true);
+		final AtomicBoolean keepRunningB = new AtomicBoolean(true);
 		
 		final Runnable runA = new Runnable() {
 
@@ -51,7 +52,7 @@ public class Test {
 			@Override
 			public void run() {
 				
-				while(keepRunning.get()) {
+				while(keepRunningA.get()) {
 					
 					aCounter = aCounter + 1;
 					
@@ -59,7 +60,7 @@ public class Test {
 					if(c < ARRAY_SIZE) {
 						results.getAndIncrement(c);
 					} else {
-						keepRunning.set(false);
+						keepRunningA.set(false);
 					}
 				}
 				
@@ -74,7 +75,7 @@ public class Test {
 			@Override
 			public void run() {
 				
-				while(keepRunning.get()) {
+				while(keepRunningB.get()) {
 					
 					bCounter = bCounter + 1;
 					
@@ -82,7 +83,7 @@ public class Test {
 					if(c < ARRAY_SIZE) {
 						results.getAndIncrement(c);
 					} else {
-						keepRunning.set(false);
+						keepRunningB.set(false);
 					}
 				}
 			}
@@ -95,7 +96,7 @@ public class Test {
 		threadA.start();
 		threadB.start();
 		
-		while(keepRunning.get())  {
+		while(keepRunningA.get() && keepRunningB.get()) {
 			
 		}
 		
@@ -111,9 +112,8 @@ public class Test {
 			}
 		}
 		
-//		System.out.println();
-//		System.out.println("Num twos = " + numTwos + " NumGTTwo = " + numGTts);
-
+		
+		
 		return numTwos + numGTts;
 	}
 	
