@@ -112,9 +112,19 @@ public class Test {
 			}
 		}
 		
-		
+//		if(numTwos + numGTts > 0) {
+//			System.out.println(printRes(results));
+//		}
 		
 		return numTwos + numGTts;
+	}
+	
+	public static String printRes(final AtomicIntegerArray res) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < res.length(); i++) {
+			sb.append(res.get(i));
+		}
+		return sb.toString();
 	}
 	
 }

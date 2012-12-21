@@ -62,10 +62,16 @@ public class LocklessCounter {
 			counter--;
 		}
 		
-		result.set(b, a+b);
-		//result.set(a+b, a+b);
+		//result.set(b, a+b);
+		result.set(a+b, result.getAndAdd(a+b, 2));
 		
-		return a+b;
+		if(result.get(a+b) == 2) {
+			return a+b;
+		} else {
+			return a+b+1;
+		}
+		
+		//return a+b;
 		
 	}
 	
@@ -75,14 +81,21 @@ public class LocklessCounter {
 		
 		B.set(a, b);
 		
-		int resTemp = result.get(b-1);
-		//int resTemp = result.get(a+b-1);
+		//int resTemp = result.get(b-1);
+		result.set(a+b, result.getAndAdd(a+b, 3));
 		
-		if(resTemp >= a+b) {
-			return resTemp + 1;
-		} else {
+		if(result.get(a+b) == 3) {
 			return a+b;
+		} else {
+			return a+b+1;
 		}
+		
+		
+//		if(resTemp >= a+b) {
+//			return resTemp + 1;
+//		} else {
+//			return a+b;
+//		}
 	}
 
 }
