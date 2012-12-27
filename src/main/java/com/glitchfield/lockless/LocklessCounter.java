@@ -62,7 +62,7 @@ public class LocklessCounter {
 			counter--;
 		}
 		
-		//result.set(b, a+b);
+		int temp = result.getAndAdd(a+b, 2);
 		result.set(a+b, result.getAndAdd(a+b, 2));
 		
 		if(result.get(a+b) == 2) {
@@ -70,8 +70,6 @@ public class LocklessCounter {
 		} else {
 			return a+b+1;
 		}
-		
-		//return a+b;
 		
 	}
 	
@@ -81,7 +79,7 @@ public class LocklessCounter {
 		
 		B.set(a, b);
 		
-		//int resTemp = result.get(b-1);
+		int temp = result.getAndAdd(a+b, 3);
 		result.set(a+b, result.getAndAdd(a+b, 3));
 		
 		if(result.get(a+b) == 3) {
@@ -90,12 +88,23 @@ public class LocklessCounter {
 			return a+b+1;
 		}
 		
-		
-//		if(resTemp >= a+b) {
-//			return resTemp + 1;
-//		} else {
-//			return a+b;
-//		}
+	}
+	
+	public boolean isResEmpty() {
+		for(int i = 0; i < SIZE; i++) {
+			if(result.get(i) != 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public String printRes() {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < result.length(); i++) {
+			sb.append(result.get(i));
+		}
+		return sb.toString();
 	}
 
 }
