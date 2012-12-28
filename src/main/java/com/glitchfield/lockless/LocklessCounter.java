@@ -11,6 +11,9 @@ public class LocklessCounter {
 	private volatile AtomicIntegerArray B;
 	private volatile AtomicIntegerArray result;
 	
+	private volatile AtomicIntegerArray AThreadRes;
+	private volatile AtomicIntegerArray BThreadRes;
+	
 	private volatile AtomicIntegerArray AThreadAVal;
 	private volatile AtomicIntegerArray AThreadBVal;
 	private volatile AtomicIntegerArray BThreadAVal;
@@ -24,6 +27,9 @@ public class LocklessCounter {
 			B.set(i, 0);
 			result.set(i, 0);
 		}
+		
+		AThreadRes = new AtomicIntegerArray(SIZE*2);
+		BThreadRes = new AtomicIntegerArray(SIZE*2);
 		
 		AThreadAVal = new AtomicIntegerArray(SIZE*2);
 		AThreadBVal = new AtomicIntegerArray(SIZE*2);
@@ -41,6 +47,9 @@ public class LocklessCounter {
 			B.set(i, 0);
 			result.set(i, 0);
 		}
+		
+		AThreadRes = new AtomicIntegerArray(SIZE*2);
+		BThreadRes = new AtomicIntegerArray(SIZE*2);
 		
 		AThreadAVal = new AtomicIntegerArray(SIZE*2);
 		AThreadBVal = new AtomicIntegerArray(SIZE*2);
@@ -94,6 +103,7 @@ public class LocklessCounter {
 //			return coord;
 //		}
 		
+		AThreadRes.set(coord, res);
 		AThreadAVal.set(coord, a);
 		AThreadBVal.set(coord, b);
 		
@@ -127,6 +137,7 @@ public class LocklessCounter {
 //			return coord;
 //		}
 		
+		BThreadRes.set(coord, res);
 		BThreadAVal.set(coord, a);
 		BThreadBVal.set(coord, b);
 		
@@ -158,11 +169,20 @@ public class LocklessCounter {
 		
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < result.length(); i++) {
+			sb.append(AThreadRes.get(i)+",");
+		}
+		sb.append("\n");
+		for(int i = 0; i < result.length(); i++) {
 			sb.append(AThreadAVal.get(i)+",");
 		}
 		sb.append("\n");
 		for(int i = 0; i < result.length(); i++) {
 			sb.append(AThreadBVal.get(i)+",");
+		}
+		sb.append("\n");
+		
+		for(int i = 0; i < result.length(); i++) {
+			sb.append(BThreadRes.get(i)+",");
 		}
 		sb.append("\n");
 		for(int i = 0; i < result.length(); i++) {
