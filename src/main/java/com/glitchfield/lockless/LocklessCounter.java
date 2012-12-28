@@ -47,6 +47,7 @@ public class LocklessCounter {
 	public int AincrementAndGet(final int a) {
 		
 		A = a;
+		A = A;
 		
 		int b = B.get(a-1);
 		int counter = a-2;
@@ -62,7 +63,7 @@ public class LocklessCounter {
 			counter--;
 		}
 		
-		int temp = result.getAndAdd(a+b, 2);
+		
 		result.set(a+b, result.getAndAdd(a+b, 2));
 		
 		if(result.get(a+b) == 2) {
@@ -79,7 +80,6 @@ public class LocklessCounter {
 		
 		B.set(a, b);
 		
-		int temp = result.getAndAdd(a+b, 3);
 		result.set(a+b, result.getAndAdd(a+b, 3));
 		
 		if(result.get(a+b) == 3) {

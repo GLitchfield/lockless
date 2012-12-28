@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class Test {
 
-	final static int NUM_TESTS = 1 * 1000;
-	final static int ARRAY_SIZE = 100 * 1000;
+	final static int NUM_TESTS = 100 * 1000;
+	final static int ARRAY_SIZE = 10 * 1000;
 	
 	public static void main(final String[] args) {
 		

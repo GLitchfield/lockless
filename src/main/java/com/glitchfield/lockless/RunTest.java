@@ -35,12 +35,12 @@ public class RunTest {
 			@Override
 			public void run() {
 				
-//				latch.countDown();
-//				try {
-//					latch.await();
-//				} catch (final InterruptedException e) {
-//					//e.printStackTrace();
-//				}
+				latch.countDown();
+				try {
+					latch.await();
+				} catch (final InterruptedException e) {
+					//e.printStackTrace();
+				}
 				
 				while(keepRunningA.get()) {
 					
@@ -65,12 +65,12 @@ public class RunTest {
 			@Override
 			public void run() {
 				
-//				latch.countDown();
-//				try {
-//					latch.await();
-//				} catch (final InterruptedException e) {
-//					//e.printStackTrace();
-//				}
+				latch.countDown();
+				try {
+					latch.await();
+				} catch (final InterruptedException e) {
+					//e.printStackTrace();
+				}
 				
 				while(keepRunningB.get()) {
 					
@@ -100,12 +100,13 @@ public class RunTest {
 			
 		}
 		
-		while(threadA.isAlive() && threadB.isAlive()) {
-			
+		try {
+			threadA.join();
+			threadB.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		
-		threadA.interrupt();
-		threadB.interrupt();
 		
 		int numTwos = 0;
 		int numGTts = 0;
@@ -118,10 +119,10 @@ public class RunTest {
 			}
 		}
 	
-		if(numTwos + numGTts > 0 && !counter.isResEmpty()) {
-		System.out.println(printRes(results));
-		System.out.println(counter.printRes());
-		}
+//		if(numTwos + numGTts > 0 && !counter.isResEmpty()) {
+//			System.out.println(printRes(results));
+//			System.out.println(counter.printRes());
+//		}
 	
 //		if(!counter.isResEmpty()) {
 //			System.out.println(counter.printRes());
