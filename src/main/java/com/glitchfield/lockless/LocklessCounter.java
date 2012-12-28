@@ -11,6 +11,11 @@ public class LocklessCounter {
 	private volatile AtomicIntegerArray B;
 	private volatile AtomicIntegerArray result;
 	
+	private volatile AtomicIntegerArray AThreadAVal;
+	private volatile AtomicIntegerArray AThreadBVal;
+	private volatile AtomicIntegerArray BThreadAVal;
+	private volatile AtomicIntegerArray BThreadBVal;
+	
 	public LocklessCounter() {
 		
 		B = new AtomicIntegerArray(SIZE*2);
@@ -19,6 +24,11 @@ public class LocklessCounter {
 			B.set(i, 0);
 			result.set(i, 0);
 		}
+		
+		AThreadAVal = new AtomicIntegerArray(SIZE*2);
+		AThreadBVal = new AtomicIntegerArray(SIZE*2);
+		BThreadAVal = new AtomicIntegerArray(SIZE*2);
+		BThreadBVal = new AtomicIntegerArray(SIZE*2);
 		
 	}
 	
@@ -31,6 +41,11 @@ public class LocklessCounter {
 			B.set(i, 0);
 			result.set(i, 0);
 		}
+		
+		AThreadAVal = new AtomicIntegerArray(SIZE*2);
+		AThreadBVal = new AtomicIntegerArray(SIZE*2);
+		BThreadAVal = new AtomicIntegerArray(SIZE*2);
+		BThreadBVal = new AtomicIntegerArray(SIZE*2);
 		
 	}
 	
@@ -63,13 +78,29 @@ public class LocklessCounter {
 			counter--;
 		}
 		
+		int coord = a+b;
 		
-		result.set(a+b, result.getAndAdd(a+b, 2));
+		int temp = result.addAndGet(coord, 2);
+		result.set(coord, temp);
+		int res = result.get(coord);
 		
-		if(result.get(a+b) == 2) {
-			return a+b;
+//		if(res != 2) {
+//			if(a <= b) {
+//				return coord;
+//			} else {
+//				return coord+1;
+//			}
+//		} else {
+//			return coord;
+//		}
+		
+		AThreadAVal.set(coord, a);
+		AThreadBVal.set(coord, b);
+		
+		if(res == 2) {
+			return coord;
 		} else {
-			return a+b+1;
+			return coord+1;
 		}
 		
 	}
@@ -80,14 +111,30 @@ public class LocklessCounter {
 		
 		B.set(a, b);
 		
-		result.set(a+b, result.getAndAdd(a+b, 3));
+		int coord = a+b;
 		
-		if(result.get(a+b) == 3) {
-			return a+b;
+		int temp = result.addAndGet(coord, 3);
+		result.set(coord, temp);
+		int res = result.get(coord);
+		
+//		if(res != 3) {
+//			if(a <= b) {
+//				return coord;
+//			} else {
+//				return coord+1;
+//			}
+//		} else {
+//			return coord;
+//		}
+		
+		BThreadAVal.set(coord, a);
+		BThreadBVal.set(coord, b);
+		
+		if(res == 3) {
+			return coord;
 		} else {
-			return a+b+1;
+			return coord+1;
 		}
-		
 	}
 	
 	public boolean isResEmpty() {
@@ -102,7 +149,28 @@ public class LocklessCounter {
 	public String printRes() {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < result.length(); i++) {
-			sb.append(result.get(i));
+			sb.append(result.get(i)+",");
+		}
+		return sb.toString();
+	}
+	
+	public String printCoords() {
+		
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < result.length(); i++) {
+			sb.append(AThreadAVal.get(i)+",");
+		}
+		sb.append("\n");
+		for(int i = 0; i < result.length(); i++) {
+			sb.append(AThreadBVal.get(i)+",");
+		}
+		sb.append("\n");
+		for(int i = 0; i < result.length(); i++) {
+			sb.append(BThreadAVal.get(i)+",");
+		}
+		sb.append("\n");
+		for(int i = 0; i < result.length(); i++) {
+			sb.append(BThreadBVal.get(i)+",");
 		}
 		return sb.toString();
 	}

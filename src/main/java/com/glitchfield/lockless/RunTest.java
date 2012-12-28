@@ -96,10 +96,6 @@ public class RunTest {
 		threadA.start();
 		threadB.start();
 		
-		while(keepRunningA.get() && keepRunningB.get()) {
-			
-		}
-		
 		try {
 			threadA.join();
 			threadB.join();
@@ -118,11 +114,16 @@ public class RunTest {
 				numGTts++;
 			}
 		}
-	
-//		if(numTwos + numGTts > 0 && !counter.isResEmpty()) {
-//			System.out.println(printRes(results));
-//			System.out.println(counter.printRes());
+		
+//		while(counter.isResEmpty()) {
+//			
 //		}
+	
+		if(numTwos + numGTts > 0) {
+			System.out.println(printRes(results));
+			System.out.println(counter.printRes());
+			System.out.println(counter.printCoords());
+		}
 	
 //		if(!counter.isResEmpty()) {
 //			System.out.println(counter.printRes());
@@ -135,7 +136,7 @@ public class RunTest {
 	private String printRes(final AtomicIntegerArray res) {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < res.length(); i++) {
-			sb.append(res.get(i));
+			sb.append(res.get(i)+",");
 		}
 		return sb.toString();
 	}

@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class Test {
 
-	final static int NUM_TESTS = 100 * 1000;
-	final static int ARRAY_SIZE = 10 * 1000;
+	final static int NUM_TESTS = 1 * 1000;
+	final static int ARRAY_SIZE = 1 * 1000;
 	
 	public static void main(final String[] args) {
 		
@@ -21,8 +21,6 @@ public class Test {
 			int result = t.runTest();
 			results.add(result);
 			System.out.println(result);
-			//System.gc();
-			
 		}
 		
 		int sum = 0;
@@ -30,15 +28,17 @@ public class Test {
 			sum = sum + r;
 		}
 		
+		final double result = (NUM_TESTS * ARRAY_SIZE) / (double) sum;
+		
 		System.out.println();
-		System.out.println("Average: " + sum / (double)results.size());
+		System.out.println("Counts per error: " + result);
 		
 	}
 	
 	public static String printRes(final AtomicIntegerArray res) {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < res.length(); i++) {
-			sb.append(res.get(i));
+			sb.append(res.get(i)+",");
 		}
 		return sb.toString();
 	}
