@@ -4,20 +4,22 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
-public class RunTest {
+public class TestRunner {
 
-	private volatile LocklessCounter counter;
-	private volatile AtomicIntegerArray results;
-	private volatile CountDownLatch latch = new CountDownLatch(2);
+	private final LocklessCounter counter;
 	
-	final int ARRAY_SIZE;
-
-	public RunTest(final int arraySize) {
-		ARRAY_SIZE = arraySize;
-		counter = new LocklessCounter(ARRAY_SIZE);
-		results = new AtomicIntegerArray(ARRAY_SIZE);
+	private final AtomicIntegerArray results;
+	private final int COUNT_TO;
+	
+	private final CountDownLatch latch = new CountDownLatch(2);
+	
+	public TestRunner(LocklessCounter counter, final int countTo) {
+		this.counter = counter;
 		
-		for(int i = 0; i < ARRAY_SIZE; i++) {
+		results = new AtomicIntegerArray(countTo);
+		COUNT_TO = countTo;
+		
+		for(int i = 0; i < COUNT_TO; i++) {
 			results.set(i, 0);
 		}
 		
@@ -46,8 +48,8 @@ public class RunTest {
 					
 					aCounter = aCounter + 1;
 					
-					final int c = counter.AincrementAndGet(aCounter);
-					if(c < ARRAY_SIZE) {
+					final int c = counter.AIncrementAndGet(aCounter);
+					if(c < COUNT_TO) {
 						results.getAndIncrement(c);
 					} else {
 						keepRunningA.set(false);
@@ -76,8 +78,8 @@ public class RunTest {
 					
 					bCounter = bCounter + 1;
 					
-					final int c = counter.BincrementAndGet(bCounter);
-					if(c < ARRAY_SIZE) {
+					final int c = counter.BIncrementAndGet(bCounter);
+					if(c < COUNT_TO) {
 						results.getAndIncrement(c);
 					} else {
 						keepRunningB.set(false);
@@ -103,11 +105,10 @@ public class RunTest {
 			e.printStackTrace();
 		}
 		
-		
 		int numTwos = 0;
 		int numGTts = 0;
 		
-		for(int i = 0; i < ARRAY_SIZE; i++) {
+		for(int i = 0; i < COUNT_TO; i++) {
 			if(results.get(i) == 2) {
 				numTwos++;
 			} else if(results.get(i) > 2) {
@@ -115,30 +116,8 @@ public class RunTest {
 			}
 		}
 		
-//		while(counter.isResEmpty()) {
-//			
-//		}
-	
-		if(numTwos + numGTts > 0) {
-			System.out.println(printRes(results));
-			System.out.println(counter.printRes());
-			System.out.println(counter.printCoords());
-		}
-	
-//		if(!counter.isResEmpty()) {
-//			System.out.println(counter.printRes());
-//		}
-		
 		return (numTwos + numGTts);
-		
 	}
 	
-	private String printRes(final AtomicIntegerArray res) {
-		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < res.length(); i++) {
-			sb.append(res.get(i)+",");
-		}
-		return sb.toString();
-	}
 	
 }

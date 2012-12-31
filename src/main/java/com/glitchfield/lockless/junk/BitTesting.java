@@ -1,4 +1,4 @@
-package com.glitchfield.lockless;
+package com.glitchfield.lockless.junk;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

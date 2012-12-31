@@ -1,9 +1,10 @@
-package com.glitchfield.lockless;
+package com.glitchfield.lockless.firstarray;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicIntegerArray;
+
 
 public class Sanity {
 	
@@ -39,7 +40,7 @@ public class Sanity {
 	
 	public static int runTestA(final int size) {
 		
-		final LocklessCounter counter = new LocklessCounter(size);
+		final ArrayLocklessCounter counter = new ArrayLocklessCounter(size);
 		
 		final AtomicIntegerArray results = new AtomicIntegerArray(ARRAY_SIZE);
 		
@@ -101,7 +102,7 @@ public class Sanity {
 	
 	public static int runTestB(final int size) {
 		
-		final LocklessCounter counter = new LocklessCounter(size);
+		final ArrayLocklessCounter counter = new ArrayLocklessCounter(size);
 		
 		final AtomicIntegerArray results = new AtomicIntegerArray(ARRAY_SIZE);
 		
